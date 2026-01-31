@@ -1,4 +1,3 @@
-import random
 import pytest
 from datetime import date, timedelta
 from app.api.schemas.antifraud import Loan
@@ -9,10 +8,13 @@ def adult_birth_date():
 
 
 @pytest.fixture
-def valid_phone():
-    prefix = random.choice(['+7', '8'])
-    digits = ''.join(str(random.randint(0, 9)) for _ in range(10))
-    return f"{prefix}{digits}"
+def valid_phone_plus7():
+    return "+79123456789"
+
+
+@pytest.fixture
+def valid_phone_8():
+    return "89123456789"
 
 
 @pytest.fixture
@@ -25,9 +27,33 @@ def closed_loan():
 
 
 @pytest.fixture
+def underage_birth_date():
+    return date.today().replace(year=date.today().year - 10)
+
+
+@pytest.fixture
+def future_birth_date():
+    return date.today() + timedelta(days=1)
+
+
+@pytest.fixture
+def invalid_phone():
+    return "123456"
+
+
+@pytest.fixture
 def open_loan():
     return Loan(
         amount=10_000,
         loan_date=date.today() - timedelta(days=30),
         is_closed=False,
+    )
+
+
+@pytest.fixture
+def future_loan():
+    return Loan(
+        amount=10_000,
+        loan_date=date.today() + timedelta(days=1),
+        is_closed=True,
     )
